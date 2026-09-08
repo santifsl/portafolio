@@ -1,1 +1,40 @@
+@import url("https://fonts.googleapis.com/css2?family=Viaoda+Libre&family=Imprima&display=swap");
 @import "tailwindcss";
+
+@theme {
+  /* Stage — the Figma frame is authored at a fixed 1440x810 */
+  --spacing-stage-w: 1440px;
+  --spacing-stage-h: 810px;
+
+  --font-display: "Viaoda Libre", serif;
+  --font-body: "Imprima", sans-serif;
+
+  /* Figma: STAGE2 fill */
+  --color-stage: #454640;
+  /* Figma: Group 49 card fill */
+  --color-card-shell: #160e05;
+  /* Figma: Union / arrow accent */
+  --color-accent: #f3ceb9;
+  /* Figma: Polygon 2 (play glyph) */
+  --color-play: #f69070;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-stage);
+  color: #fff;
+  font-family: var(--font-body);
+  overflow-x: hidden;
+}
+
+/* Figma applies the "ss02" stylistic set to the display face */
+.font-display {
+  font-family: var(--font-display);
+  font-feature-settings: "ss02" 1;
+}
