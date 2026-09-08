@@ -10,8 +10,8 @@ import { CardOrbit } from "./CardOrbit"
 export function CloudWorld() {
   return (
     <div className="bg-stage absolute inset-0 overflow-hidden">
-      <img data-layer="clouds" src={clouds} alt="" className="absolute max-w-none object-cover" />
-      <img data-layer="fill" src={fill} alt="" className="absolute max-w-none object-cover" />
+      <img data-layer="clouds" src={clouds} alt="" className="absolute max-w-none object-fill" />
+      <img data-layer="fill" src={fill} alt="" className="absolute max-w-none object-fill" />
 
       {/* Rectangle 6 (node 19001:550): a vertically flipped gradient scrim. */}
       <div

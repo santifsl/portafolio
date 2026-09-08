@@ -3,7 +3,7 @@ import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 
 import { ARRIVAL_INDEX, KEYFRAMES, type Box } from "../data/keyframes"
-import { ORBIT_END, ORBIT_START } from "../data/orbit"
+import { ORBIT_START, ORBIT_STATES } from "../data/orbit"
 import { STAGE_H, STAGE_W } from "../lib/stage"
 import { CloudWorld } from "./CloudWorld"
 import { ForestPortal } from "./ForestPortal"
@@ -94,8 +94,13 @@ export function HomeSequence() {
       if (first.object) gsap.set(objectEl, objectProps(first.object))
       // Set the custom properties on the element directly; GSAP otherwise reads
       // an empty computed value and tweens the radius up from 0.
-      orbitEl.style.setProperty("--orbit-rotation", `${ORBIT_START.rotation}deg`)
-      orbitEl.style.setProperty("--orbit-radius", `${ORBIT_START.radius}px`)
+      const setOrbit = (o: typeof ORBIT_START) => {
+        orbitEl.style.setProperty("--orbit-rotation", `${o.rotation}deg`)
+        orbitEl.style.setProperty("--orbit-radius", `${o.radius}px`)
+        orbitEl.style.setProperty("--orbit-cx", `${o.cx}px`)
+        orbitEl.style.setProperty("--orbit-cy", `${o.cy}px`)
+      }
+      setOrbit(ORBIT_START)
       gsap.set(act1El, { opacity: 0 })
       // The cloud world is visible through the portal from the first frame; only
       // the orbit is withheld, matching the source where the Act 1 wheel sits far
@@ -132,6 +137,20 @@ export function HomeSequence() {
         const obj = kf.object ?? prev.object
         if (obj) tl.to(objectEl, objectProps(obj), at)
 
+        const orbit = ORBIT_STATES[i]
+        if (orbit) {
+          tl.to(
+            orbitEl,
+            {
+              "--orbit-rotation": `${orbit.rotation}deg`,
+              "--orbit-radius": `${orbit.radius}px`,
+              "--orbit-cx": `${orbit.cx}px`,
+              "--orbit-cy": `${orbit.cy}px`,
+            },
+            at,
+          )
+        }
+
         const stat = STAT_BOXES[i] ?? STAT_BOXES[i - 1]
         if (stat) {
           tl.to(
@@ -153,21 +172,6 @@ export function HomeSequence() {
         subEl,
         { fontSize: ACT2_SUB.size, top: ACT2_SUB.top, width: ACT2_SUB.width, duration: ARRIVAL_INDEX },
         0,
-      )
-
-      // The wheel opens and turns across the Act 2 frames.
-      tl.fromTo(
-        orbitEl,
-        {
-          "--orbit-rotation": `${ORBIT_START.rotation}deg`,
-          "--orbit-radius": `${ORBIT_START.radius}px`,
-        },
-        {
-          "--orbit-rotation": `${ORBIT_END.rotation}deg`,
-          "--orbit-radius": `${ORBIT_END.radius}px`,
-          duration: steps - ARRIVAL_INDEX,
-        },
-        ARRIVAL_INDEX,
       )
 
       return () => window.removeEventListener("resize", fit)
