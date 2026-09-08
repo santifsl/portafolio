@@ -1,5 +1,19 @@
-@import url("https://fonts.googleapis.com/css2?family=Viaoda+Libre&family=Imprima&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Imprima&display=swap");
 @import "tailwindcss";
+
+/*
+ * Viaoda Libre is self-hosted rather than loaded from Google Fonts: the served
+ * subset strips every stylistic set, and the design relies on "ss02" for the
+ * decorated O in WONDER / BEYOND. This is the upstream OFL build, subset to
+ * latin with all layout features preserved. Licence alongside the file.
+ */
+@font-face {
+  font-family: "Viaoda Libre";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./assets/fonts/ViaodaLibre-Regular.woff2") format("woff2");
+}
 
 @theme {
   /* Stage — the Figma frame is authored at a fixed 1440x810 */

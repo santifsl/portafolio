@@ -31,6 +31,16 @@ function objectProps(o: NonNullable<(typeof KEYFRAMES)[number]["object"]>) {
   }
 }
 
+/**
+ * The inner headline is authored small inside the portal (node 19001:551) and
+ * full size once through it (node 19001:885). Both text and orbit scale by the
+ * same 2.238x factor between those states.
+ */
+const ACT1_TITLE = { size: 34.464, top: 7.16 }
+const ACT2_TITLE = { size: 77.114, top: 146 }
+const ACT1_SUB = { size: 10.726, top: 47.81, width: 335.196 }
+const ACT2_SUB = { size: 24, top: 237, width: 750 }
+
 /** Group 49's box per frame, used to carry the Act 1 UI through the flight. */
 const STAT_BOXES: (Box | null)[] = [
   { x: 891, y: -236.5, w: 573.6, h: 733.5 },
@@ -69,7 +79,9 @@ export function HomeSequence() {
       const orbitEl = q('[data-layer="orbit-vars"]')
       const forestEl = q('[data-layer="forest"]')
       const act1El = q('[data-layer="act1"]')
-      const act2El = q('[data-layer="act2"]')
+      const arrivalEl = q('[data-layer="arrival"]')
+      const titleEl = q('[data-layer="act2-title"]')
+      const subEl = q('[data-layer="act2-sub"]')
       const statsEl = q('[data-layer="stats"]')
 
       const first = KEYFRAMES[0]
@@ -80,12 +92,17 @@ export function HomeSequence() {
         if (b) gsap.set(layers[name], boxProps(b))
       }
       if (first.object) gsap.set(objectEl, objectProps(first.object))
-      gsap.set(orbitEl, {
-        "--orbit-rotation": `${ORBIT_START.rotation}deg`,
-        "--orbit-radius": `${ORBIT_START.radius}px`,
-      })
+      // Set the custom properties on the element directly; GSAP otherwise reads
+      // an empty computed value and tweens the radius up from 0.
+      orbitEl.style.setProperty("--orbit-rotation", `${ORBIT_START.rotation}deg`)
+      orbitEl.style.setProperty("--orbit-radius", `${ORBIT_START.radius}px`)
       gsap.set(act1El, { opacity: 0 })
-      gsap.set(act2El, { opacity: 0 })
+      // The cloud world is visible through the portal from the first frame; only
+      // the orbit is withheld, matching the source where the Act 1 wheel sits far
+      // above the frame rather than travelling into place.
+      gsap.set(arrivalEl, { opacity: 0 })
+      gsap.set(titleEl, { fontSize: ACT1_TITLE.size, top: ACT1_TITLE.top })
+      gsap.set(subEl, { fontSize: ACT1_SUB.size, top: ACT1_SUB.top, width: ACT1_SUB.width })
       gsap.set(statsEl, { x: STAT_BOXES[0]!.x, y: STAT_BOXES[0]!.y, opacity: 0 })
 
       const steps = KEYFRAMES.length - 1
@@ -129,17 +146,28 @@ export function HomeSequence() {
       tl.to(act1El, { opacity: 1 }, 0)
       tl.to([act1El, forestEl, statsEl], { opacity: 0 }, ARRIVAL_INDEX - 1)
       // Act 2 arrives as the camera comes through.
-      tl.to(act2El, { opacity: 1 }, ARRIVAL_INDEX - 1)
+      tl.to(arrivalEl, { opacity: 1 }, ARRIVAL_INDEX - 1)
+      // The inner headline grows from its through-the-portal size to full size.
+      tl.to(titleEl, { fontSize: ACT2_TITLE.size, top: ACT2_TITLE.top, duration: ARRIVAL_INDEX }, 0)
+      tl.to(
+        subEl,
+        { fontSize: ACT2_SUB.size, top: ACT2_SUB.top, width: ACT2_SUB.width, duration: ARRIVAL_INDEX },
+        0,
+      )
 
       // The wheel opens and turns across the Act 2 frames.
-      tl.to(
+      tl.fromTo(
         orbitEl,
+        {
+          "--orbit-rotation": `${ORBIT_START.rotation}deg`,
+          "--orbit-radius": `${ORBIT_START.radius}px`,
+        },
         {
           "--orbit-rotation": `${ORBIT_END.rotation}deg`,
           "--orbit-radius": `${ORBIT_END.radius}px`,
-          duration: steps - ARRIVAL_INDEX + 1,
+          duration: steps - ARRIVAL_INDEX,
         },
-        ARRIVAL_INDEX - 1,
+        ARRIVAL_INDEX,
       )
 
       return () => window.removeEventListener("resize", fit)
@@ -157,9 +185,7 @@ export function HomeSequence() {
           style={{ width: STAGE_W, height: STAGE_H }}
         >
           <div data-layer="orbit-vars" className="absolute inset-0">
-            <div data-layer="act2" className="absolute inset-0">
-              <CloudWorld />
-            </div>
+            <CloudWorld />
           </div>
 
           <ForestPortal />

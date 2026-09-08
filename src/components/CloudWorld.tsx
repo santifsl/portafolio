@@ -21,21 +21,30 @@ export function CloudWorld() {
         }}
       />
 
-      <p
-        data-layer="act2-title"
-        className="font-display absolute left-1/2 top-[146px] -translate-x-1/2 whitespace-nowrap text-center text-[77.114px] uppercase leading-[0.94] text-white"
-      >
-        Create Beyond Reality
-      </p>
-      <p
-        data-layer="act2-sub"
-        className="absolute left-1/2 top-[237px] w-[750px] -translate-x-1/2 text-center text-[24px] leading-[1.2] text-white"
-      >
-        Exclusive journeys to breathtaking destinations curated for travelers seeking rare and
-        unforgettable experiences.
-      </p>
+      {/*
+        Title, subhead and orbit all arrive together. In every Act 1 source frame
+        they sit behind the opaque part of bg1 and are not legible, so they are
+        revealed with the flight rather than shown through the portal.
+      */}
+      <div data-layer="arrival" className="absolute inset-0">
+        <p
+          data-layer="act2-title"
+          className="font-display absolute left-1/2 -translate-x-1/2 whitespace-nowrap text-center uppercase leading-[0.94] text-white"
+        >
+          Create Beyond Reality
+        </p>
+        <p
+          data-layer="act2-sub"
+          className="absolute left-1/2 -translate-x-1/2 text-center leading-[1.2] text-white"
+        >
+          Exclusive journeys to breathtaking destinations curated for travelers seeking rare and
+          unforgettable experiences.
+        </p>
 
-      <CardOrbit />
+        <div data-layer="orbit" className="absolute inset-0">
+          <CardOrbit />
+        </div>
+      </div>
 
       {/* "Object" / Component 4: the foreground cloud band, mirrored horizontally. */}
       <img

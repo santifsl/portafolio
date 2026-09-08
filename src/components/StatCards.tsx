@@ -23,34 +23,44 @@ const CARDS: StatCard[] = [
   {
     src: watchDemoA,
     label: "Watch Demo",
-    left: 891,
+    left: 0,
     img: { left: -0.31, top: 0, width: 184.612, height: 310.009 },
   },
   {
     src: globalPartners,
     label: "Global Partners",
-    left: 1085.79,
+    left: 194.79,
     img: { left: -9.61, top: 193 - 36.13 - 341.244, width: 203.213, height: 341.244 },
     stat: "32",
   },
   {
     src: watchDemoB,
     label: "Watch Demo",
-    left: 1280.59,
+    left: 389.59,
     img: { left: -18.97, top: -91.34, width: 221.941, height: 372.693 },
   },
 ]
 
-/** Progress pills under the cards (node 19001:725). */
-const PILL_OPACITY = [1, 0.4, 0.3, 0.2]
+/**
+ * Progress pills under the cards (node 19001:725). Stage x of 920 / 954.51 /
+ * 989.02 / 1023.52 and y 489.02, expressed relative to the Group 49 origin.
+ */
+const PILLS = [
+  { x: 29, opacity: 1 },
+  { x: 63.51, opacity: 0.4 },
+  { x: 98.02, opacity: 0.3 },
+  { x: 132.52, opacity: 0.2 },
+]
 
 export function StatCards() {
+  // Coordinates are relative to the Group 49 origin (stage 891, 273.5); the
+  // wrapper in HomeSequence carries that box and its scale through the flight.
   return (
     <div className="absolute inset-0">
       {CARDS.map((card, i) => (
         <div
           key={i}
-          className="bg-card-shell absolute top-[273.5px] h-[193px] w-[184px] overflow-hidden rounded-[40px]"
+          className="bg-card-shell absolute top-0 h-[193px] w-[184px] overflow-hidden rounded-[40px]"
           style={{ left: card.left }}
         >
           <img
@@ -84,11 +94,11 @@ export function StatCards() {
         </div>
       ))}
 
-      {PILL_OPACITY.map((opacity, i) => (
+      {PILLS.map((pill, i) => (
         <div
           key={i}
-          className="absolute top-[489px] h-[8px] w-[17.508px] rounded-[99px] bg-white"
-          style={{ left: 920 + i * 30.02, opacity }}
+          className="absolute top-[215.52px] h-[8px] w-[17.508px] rounded-[99px] bg-white"
+          style={{ left: pill.x, opacity: pill.opacity }}
         />
       ))}
     </div>
